@@ -12,7 +12,7 @@ window.CAPRIOLLI = {
     perfilUrl: "https://www.instagram.com/pizza_capriolli/",
     cardapioUrl: "https://capriolli.menudino.com",
     // Foto da pizza no topo (PNG com fundo transparente). Sem o arquivo, aparece a logo.
-    fotoPizza: "assets/pizza-calabresa.png"
+    fotoPizza: "assets/pizza-calabresa.webp"
   },
   agencia: { nome: "NC Comunicação" },
 

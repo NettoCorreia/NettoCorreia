@@ -19,7 +19,7 @@ A página abre no primeiro mês da lista. Os meses anteriores continuam disponí
 
 ## Foto da pizza no topo
 
-Salve um PNG com fundo transparente em `assets/pizza-calabresa.png`. Enquanto o arquivo não existir, a página mostra a logo da Capriolli no lugar.
+Salve a foto (WebP ou PNG com fundo transparente) em `assets/` e aponte o campo `fotoPizza` do `dados.js` para ela (hoje: `assets/pizza-calabresa.webp`). Enquanto o arquivo não existir, a página mostra a logo da Capriolli no lugar.
 
 ## Capas dos Reels de referência
 
