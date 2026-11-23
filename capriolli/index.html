@@ -75,11 +75,31 @@ p{margin:0}
 @keyframes flame{50%{background-position:100% 0}}
 .hero h1{font-size:clamp(28px,7.4vw,46px);font-weight:800}
 .hero .resumo{color:var(--muted);max-width:52ch;font-size:15.5px;margin-top:6px}
-.pizza{position:relative;width:min(80vw,400px);aspect-ratio:1;margin:10px auto 0;display:grid;place-items:center}
-.pizza::before{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(255,140,50,.35),transparent 66%);filter:blur(22px)}
-.pizza img{position:relative;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 26px 40px rgba(0,0,0,.6));animation:gira 80s linear infinite}
-.pizza img.logo{width:86%;height:auto;animation:none;filter:none}
+.pizza{position:relative;width:min(80vw,400px);aspect-ratio:1;margin:18px auto 10px;perspective:900px;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.pizza::before{content:"";position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle,rgba(255,140,50,.42),transparent 66%);filter:blur(24px);animation:brilho 5s ease-in-out infinite}
+.pizza .sombra{position:absolute;left:14%;right:14%;bottom:-6%;height:12%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.75),transparent);animation:sombra 5s ease-in-out 1.3s infinite}
+.pizza .flutua,.pizza .toque,.pizza .giro{position:absolute;inset:0}
+.pizza .flutua{animation:chega 1.4s cubic-bezier(.2,.9,.25,1.15) both,flutua 5s ease-in-out 1.4s infinite}
+.pizza .toque{transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .5s var(--ease)}
+.pizza .toque.on{animation:rodopio .9s var(--ease)}
+.pizza .giro{animation:gira 36s linear infinite}
+.pizza img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 22px 34px rgba(0,0,0,.55))}
+.pizza .vapor{position:absolute;bottom:42%;width:34%;height:42%;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(255,244,230,.34),transparent);filter:blur(14px);opacity:0;animation:vapor 4.8s ease-out infinite}
+.pizza .v1{left:16%;animation-delay:.8s}
+.pizza .v2{left:36%;animation-delay:2.4s;width:30%}
+.pizza .v3{left:54%;animation-delay:4s}
+.pizza.sem-foto{cursor:default}
+.pizza.sem-foto .giro,.pizza.sem-foto .flutua{animation:none}
+.pizza.sem-foto .vapor,.pizza.sem-foto .sombra{display:none}
+.pizza.sem-foto img{width:86%;height:auto;margin:auto;position:absolute;inset:0;filter:none}
 @keyframes gira{to{transform:rotate(360deg)}}
+@keyframes chega{from{opacity:0;transform:translateY(-60px) scale(.5) rotate(-200deg)}}
+@keyframes flutua{50%{transform:translateY(-14px) rotateX(9deg)}}
+@keyframes sombra{50%{transform:scale(.8);opacity:.6}}
+@keyframes brilho{50%{opacity:.65;transform:scale(.94)}}
+@keyframes rodopio{40%{transform:rotate(200deg) scale(1.08)}100%{transform:rotate(360deg) scale(1)}}
+@keyframes vapor{0%{opacity:0;transform:translateY(20px) scale(.6)}25%{opacity:.9}100%{opacity:0;transform:translateY(-150px) scale(1.5)}}
 
 /* Seções */
 section{scroll-margin-top:70px}
@@ -259,8 +279,10 @@ footer .cred{font-size:12px;color:var(--dim)}
         <h1 id="heroTitulo">O forno voltou a acender</h1>
         <p class="resumo" id="heroResumo"></p>
       </div>
-      <div class="pizza">
-        <img id="pizzaImg" alt="Pizza de calabresa" width="800" height="800">
+      <div class="pizza" id="pizza" role="img" aria-label="Pizza de calabresa">
+        <span class="sombra"></span>
+        <div class="flutua"><div class="toque" id="pizzaToque"><div class="giro"><img id="pizzaImg" alt="" width="800" height="800"></div></div></div>
+        <span class="vapor v1"></span><span class="vapor v2"></span><span class="vapor v3"></span>
       </div>
     </div>
   </section>
@@ -400,7 +422,23 @@ document.addEventListener("click", e => { if(!mesMenu.hidden && !mesMenu.contain
 
 /* Foto da pizza: se o arquivo não existir, mostra a logo */
 const pImg = $("#pizzaImg");
-const usaLogo = () => { pImg.src = "assets/logo-capriolli.png"; pImg.alt = "Capriolli"; pImg.className = "logo"; };
+const pizza = $("#pizza"), toque = $("#pizzaToque");
+const usaLogo = () => { pImg.src = "assets/logo-capriolli.png"; pizza.classList.add("sem-foto"); pizza.setAttribute("aria-label","Capriolli"); };
+/* Toque: a pizza dá um rodopio */
+pizza.addEventListener("click", () => {
+  if(pizza.classList.contains("sem-foto") || reduz) return;
+  toque.classList.remove("on"); void toque.offsetWidth; toque.classList.add("on");
+});
+toque.addEventListener("animationend", () => toque.classList.remove("on"));
+/* No computador, a pizza inclina seguindo o mouse */
+if(matchMedia("(hover: hover) and (pointer: fine)").matches && !reduz){
+  pizza.addEventListener("pointermove", e => {
+    const r = pizza.getBoundingClientRect();
+    const x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5;
+    toque.style.setProperty("--ry", (x*18).toFixed(1)+"deg"); toque.style.setProperty("--rx", (-y*18).toFixed(1)+"deg");
+  });
+  pizza.addEventListener("pointerleave", () => { toque.style.setProperty("--ry","0deg"); toque.style.setProperty("--rx","0deg"); });
+}
 pImg.addEventListener("error", usaLogo, {once:true});
 if(D.cliente.fotoPizza) pImg.src = D.cliente.fotoPizza; else usaLogo();
 
