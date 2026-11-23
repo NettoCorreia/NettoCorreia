@@ -12,10 +12,14 @@ Painel mensal de conteúdo da Pizzaria Capriolli. Ele é otimizado para celular 
 
 1. Abra `dados.js`.
 2. Copie o bloco do mês inteiro, de `{ id: "2026-12", …` até o `}` correspondente.
-3. Cole a cópia no **início** da lista `meses` e altere `id`, `rotulo`, `numero`, `ano`, `mesIndex` (0 = janeiro) e os textos.
+3. Cole a cópia no **início** da lista `meses` e altere `id`, `rotulo`, `numero` e os textos.
 4. Tire o mês novo da lista `proximos`.
 
 A página abre no primeiro mês da lista. Os meses anteriores continuam disponíveis no seletor do topo.
+
+## Foto da pizza no topo
+
+Salve um PNG com fundo transparente em `assets/pizza-calabresa.png`. Enquanto o arquivo não existir, a página mostra a logo da Capriolli no lugar.
 
 ## Capas dos Reels de referência
 
